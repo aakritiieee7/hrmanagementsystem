@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Shield, UserCheck } from 'lucide-react';
+import { Shield, UserCheck, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Login = () => {
@@ -14,6 +13,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState<'admin' | 'mentor'>('admin');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -22,142 +23,169 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
 
     try {
       const success = await login(username, password);
       if (success) {
         toast({
           title: "Login Successful",
-          description: `Welcome to DRDO HR Training Module`,
+          description: `Welcome to the DRDO HR Portal.`,
+          duration: 2000,
         });
         navigate(selectedRole === 'admin' ? '/admin' : '/mentor');
       } else {
-        toast({
-          title: "Login Failed",
-          description: "Invalid credentials. Please try again.",
-          variant: "destructive",
-        });
+        setError("Invalid username or password.");
       }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('An error occurred. Please try again later.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleQuickLogin = (role: 'admin' | 'mentor') => {
-    if (role === 'admin') {
-      setUsername('admin');
-      setPassword('admin123');
-      setSelectedRole('admin');
-    }
+    setUsername('admin');
+    setPassword('admin123');
+    setSelectedRole(role);
+    setError('');
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-drdo-navy via-drdo-navy-light to-primary">
-      <div className="w-full max-w-md p-6">
-        <Card className="shadow-elevated border-0">
-          <CardHeader className="text-center space-y-4">
-            <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center">
-              <Shield className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <CardTitle className="text-2xl font-bold text-drdo-navy">DRDO HR Portal</CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Defense Research & Development Organization
-              </CardDescription>
-            </div>
-          </CardHeader>
-          
-          <CardContent className="space-y-6">
-            {/* Role Selection */}
-            <div className="space-y-3">
-              <Label className="text-sm font-medium">Select Role</Label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setSelectedRole('admin')}
-                  className={`p-3 rounded-lg border-2 transition-all duration-200 ${
-                    selectedRole === 'admin'
-                      ? 'border-primary bg-primary/5 text-primary'
-                      : 'border-border hover:border-primary/50'
-                  }`}
-                >
-                  <Shield className="w-5 h-5 mx-auto mb-2" />
-                  <div className="text-sm font-medium">Admin</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedRole('mentor')}
-                  className={`p-3 rounded-lg border-2 transition-all duration-200 ${
-                    selectedRole === 'mentor'
-                      ? 'border-primary bg-primary/5 text-primary'
-                      : 'border-border hover:border-primary/50'
-                  }`}
-                >
-                  <UserCheck className="w-5 h-5 mx-auto mb-2" />
-                  <div className="text-sm font-medium">Mentor</div>
-                </button>
-              </div>
-            </div>
+    <div className="grid h-screen w-full lg:grid-cols-2">
+      <div className="relative hidden lg:flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 via-white to-blue-100 p-12 text-center">
+        <div className="relative z-10">
+          <img src="/drdo_logo.png" alt="DRDO Logo" className="h-80 mb-10 mx-auto" />
+          <blockquote className="space-y-2">
+            <p className="text-4xl font-extrabold leading-tight">
+              <span className="text-blue-900">Empowering India's Defense</span>
+              <br />
+              <span className="text-gray-500">Through Innovation</span>
+            </p>
+          </blockquote>
+        </div>
+      </div>
 
-            {/* Login Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter your username"
-                  required
-                />
+      <div className="relative flex items-center justify-center p-4 bg-gradient-to-b from-blue-50 via-white to-blue-100">
+        <div className="w-full max-w-lg">
+          <Card className="w-full bg-white shadow-xl rounded-none">
+            <CardHeader className="text-center">
+              <div>
+                <CardTitle className="text-3xl font-bold text-blue-900">DRDO Human Resource Portal</CardTitle>
+                <CardDescription className="text-base text-gray-500 mt-1">
+                  Defense Research & Development Organization
+                </CardDescription>
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  required
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full bg-gradient-primary hover:opacity-90 transition-opacity"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Signing In...' : 'Sign In'}
-              </Button>
-            </form>
-
-            {/* Demo Login */}
-            <div className="space-y-3">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">Demo Credentials</span>
+            </CardHeader>
+            
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground text-center uppercase tracking-wider">Select your role to continue</p>
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('admin')}
+                    className={`p-3 rounded-none border-2 transition-all duration-200 ${
+                      selectedRole === 'admin'
+                        ? 'bg-blue-700 text-white border-blue-700'
+                        : 'bg-transparent text-gray-600 border-gray-300 hover:border-blue-500 hover:text-blue-500'
+                    }`}
+                  >
+                    <Shield className="w-5 h-5 mx-auto mb-2" />
+                    <div className="text-sm font-medium uppercase">Admin</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('mentor')}
+                    className={`p-3 rounded-none border-2 transition-all duration-200 ${
+                      selectedRole === 'mentor'
+                        ? 'bg-blue-700 text-white border-blue-700'
+                        : 'bg-transparent text-gray-600 border-gray-300 hover:border-blue-500 hover:text-blue-500'
+                    }`}
+                  >
+                    <UserCheck className="w-5 h-5 mx-auto mb-2" />
+                    <div className="text-sm font-medium uppercase">Mentor</div>
+                  </button>
                 </div>
               </div>
-              
-              <div className="space-y-2">
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('admin')}
-                  className="w-full p-2 text-xs bg-muted hover:bg-muted/80 rounded-md transition-colors"
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="username" className="text-sm uppercase">Username</Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter your username"
+                    className="placeholder:text-gray-500 text-sm rounded-none"
+                    required
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-sm uppercase">Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter your password"
+                      className="placeholder:text-gray-500 text-sm pr-10 rounded-none"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  </div>
+                </div>
+
+                {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+
+                <Button
+                  type="submit"
+                  className="w-full bg-blue-700 hover:bg-blue-800 text-white transition-all duration-200 shadow-md hover:shadow-lg text-base py-3 rounded-none uppercase"
+                  disabled={isLoading}
                 >
-                  <Badge variant="outline" className="mr-2">Admin</Badge>
-                  admin / admin123
-                </button>
+                  {isLoading ? 'Signing In...' : 'Sign In'}
+                </Button>
+              </form>
+
+              <div className="space-y-3">
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-white px-2 text-gray-500">
+                      Demo Credentials
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="flex justify-center">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleQuickLogin('admin')}
+                    className="w-full text-sm rounded-none uppercase"
+                  >
+                   Quick Login as Admin
+                  </Button>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+              <div className="text-center text-xs text-gray-500">
+                Need help? <a href="mailto:support@drdo.gov.in" className="underline hover:text-blue-700">Email: support@drdo.gov.in</a>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
