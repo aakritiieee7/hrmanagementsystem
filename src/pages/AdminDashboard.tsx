@@ -17,6 +17,7 @@ import {
   GraduationCap,
   ShieldCheck,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
@@ -74,35 +75,35 @@ const AdminDashboard = () => {
 
   const heroFeatures = [
     {
-      title: 'AI-Enhanced',
-      description: 'Smart matching, personalized learning paths & predictive insights for optimal talent development.',
-      icon: Lightbulb,
-      color: 'text-drdo-warning',
+      title: 'Resume Matching',
+      description: 'Automated resume upload, NLP based skill extraction, and mentor matching.',
+      icon: UserPlus,
+      color: 'text-blue-800',
     },
     {
-      title: 'Future-Ready Talent',
-      description: 'Nurturing next-gen innovators with cutting-edge projects and skill development programs.',
-      icon: GraduationCap,
-      color: 'text-drdo-success',
+      title: 'Unified Management',
+      description: 'Add mentors, assign interns, track projects, and issue certificates: all in one dashboard.',
+      icon: ClipboardList,
+      color: 'text-blue-800',
+    },
+    {
+      title: 'Data-Driven Oversight',
+      description: 'View clean, interactive analytics to monitor performance and internship trends.',
+      icon: BarChart3,
+      color: 'text-blue-800',
     },
     {
       title: 'Secure & Compliant',
-      description: 'Ensuring data integrity and adherence to DRDO\'s stringent security protocols.',
+      description: 'DRDO-grade data protection ensuring security, privacy, and regulatory compliance.',
       icon: ShieldCheck,
-      color: 'text-blue-400',
-    },
-    {
-      title: 'Streamlined Operations',
-      description: 'Automating administrative tasks for efficient and transparent internship management.',
-      icon: ClipboardList,
-      color: 'text-purple-400',
+      color: 'text-blue-800',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen bg-gradient-to-b from-[#e3f0ff] to-white">
       {/* Header */}
-      <header className="bg-card border-b border-border shadow-soft">
+      <header className="fixed top-0 left-0 w-full bg-white/90 border-b border-gray-200/80 shadow-soft z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
@@ -128,10 +129,11 @@ const AdminDashboard = () => {
                 <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
               <Button
+                aria-label="Logout of admin dashboard"
                 variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition"
               >
                 <LogOut className="w-4 h-4 mr-2" />
                 Logout
@@ -142,57 +144,76 @@ const AdminDashboard = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-drdo-navy to-drdo-navy-light text-white py-16 sm:py-24 overflow-hidden">
-        {/* Centered Logo Watermark */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none z-0">
+      <section className="relative flex flex-col items-center justify-center min-h-screen pt-24 w-full overflow-hidden bg-gradient-to-b from-[#e3f0ff] via-white to-blue-100">
+        <div className="pointer-events-none absolute inset-0 z-0">
+          <div className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[60vh] rounded-full bg-blue-200 opacity-30 blur-3xl"></div>
+          <div className="absolute right-0 bottom-0 w-1/3 h-1/3 rounded-full bg-blue-300 opacity-20 blur-2xl"></div>
+          <div className="absolute left-0 top-0 w-1/4 h-1/4 rounded-full bg-blue-100 opacity-30 blur-2xl"></div>
+        </div>
+        <div className="relative z-10 flex flex-col items-center w-full">
           <img
             src="/drdo_logo.png"
             alt="DRDO Logo"
-            className="w-80 h-80 object-contain"
+            className="h-28 w-28 mb-8 object-contain"
           />
+          <motion.h1
+            initial={{ opacity: 0, y: -40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-6 text-blue-900 leading-tight text-center w-full"
+          >
+            Transforming the Way <br /> DRDO Manages Talent.
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-2xl text-gray-700 mb-10 font-medium w-full text-center"
+          >
+            Empowering DRDO with a seamless digital ecosystem for people, projects, and performance.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <Button
+              size="lg"
+              onClick={() => navigate('/admin/add-intern')}
+              className="bg-drdo-navy hover:bg-drdo-navy/90 text-white w-full sm:w-auto rounded-none"
+            >
+              <UserPlus className="w-5 h-5 mr-2" />
+              Onboard New Intern
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => navigate('/admin/assign-mentor')}
+              className="border-drdo-navy text-drdo-navy hover:bg-drdo-navy/5 hover:text-drdo-navy w-full sm:w-auto rounded-none"
+            >
+              <UserCog className="w-5 h-5 mr-2" />
+              Assign Mentors
+            </Button>
+          </motion.div>
         </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-start justify-between">
-          <div className="text-center md:text-left md:w-2/3 mb-10 md:mb-0">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mb-4">
-                <span>AI Powered</span><br></br>
-              
-              <span>HR Management</span> <br></br>
-              <span> Portal </span>
-            </h1>
-            <p className="text-lg text-white/90 mb-6 max-w-2xl mx-auto md:mx-0">
-            Advance DRDO's mission with a digitally transformed HR ecosystem. An intelligent platform that optimizes talent acquisition, project management, and compliance, fostering a pipeline of future-ready scientists and engineers</p>
-            <div className="flex flex-wrap justify-center md:justify-start gap-4">
-              <Button size="lg" className="bg-white text-drdo-navy hover:bg-gray-100 shadow-lg" onClick={() => navigate('/admin/add-intern')}>
-                <UserPlus className="w-5 h-5 mr-2" />
-                Onboard New Intern
-              </Button>
-              <Button size="lg" variant="outline" className="bg-white text-drdo-navy hover:bg-gray-100 shadow-lg" onClick={() => navigate('/admin/analytics')}>
-                <BarChart3 className="w-5 h-5 mr-2" />
-                View Analytics
-              </Button>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto items-stretch h-full"
+        >
+          {heroFeatures.map((feature, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center justify-center h-full p-6 bg-white/70 backdrop-blur-md rounded-xl shadow-md hover:shadow-lg transition-shadow text-center"
+            >
+              <feature.icon className={`w-8 h-8 mb-3 ${feature.color}`} />
+              <h3 className="font-semibold text-blue-900 text-lg mb-2">{feature.title}</h3>
+              <p className="text-sm text-gray-700 text-justify">{feature.description}</p>
             </div>
-          </div>
-
-          {/* Features */}
-          <div className="md:w-1/3 flex justify-center items-center">
-            <div className="flex flex-col space-y-4">
-              {heroFeatures.map((feature, index) => (
-                <div
-                  key={index}
-                  className="flex items-center space-x-3 bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm p-4 rounded-lg shadow-md border border-white border-opacity-30"
-                >
-                  <feature.icon className={`w-8 h-8 ${feature.color}`} />
-                  <div>
-                    <h3 className="font-semibold text-xl">{feature.title}</h3>
-                    <p className="text-sm opacity-80">{feature.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+          ))}
+        </motion.div>
       </section>
 
       {/* Main Dashboard */}
@@ -203,7 +224,7 @@ const AdminDashboard = () => {
             Manage the DRDO internship program from this central hub. Monitor progress, assign mentors, and track achievements.
           </p>
         </div>
-
+        
         {/* Navigation Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {navigationItems.map((item, index) => (
